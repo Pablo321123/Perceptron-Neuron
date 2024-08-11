@@ -23,7 +23,7 @@ class Perceptron:
         self.Error = 1  # Error
         self.max_it = max_it + 1  # Maximo de Épocas
         self.fator_aprendizagem = fator_aprendizagem  # Fator de aprendizagem
-        self.ve = [[] for len in range(n)]  # vetor de erros
+        self.ve = [[] for len in range(self.X.shape[1])]  # vetor de erros
 
     def degrauFunction(self, value, j):
         return 1 if value[j] >= 0 else 0
@@ -47,14 +47,18 @@ class Perceptron:
 
                 e = (d - Y)  # Fazer as verificações para verificar se as colunas são iguais     
                 for i in range(self.n):
-                    self.W[i] = w + (self.fator_aprendizagem * e[i]) * x.T[j]  # -> transposta
+                    self.W[i] = self.W[i] + (self.fator_aprendizagem * e[i]) * x.T[j]  # -> transposta
                     self.b[i] = self.b[i] + (self.fator_aprendizagem * e[i] * 1)  # -> X[0] = 1
                     self.Error = self.Error + math.pow(e[i], 2)  # sum(math.pow(e, 2))
-                    self.ve[i].append(e)
-                # print(self.b)
+                self.ve[j].append(e)
+                #print(Y)
+
 
             self.t = self.t + 1
+        
         print(self.W)
+        print(self.b)
+        
             
         
 
@@ -63,10 +67,11 @@ class Perceptron:
         taxa_acertos = 0
         Y = [[] for len in range(self.n)]
         ve_teste = [[] for len in range(self.n)]
+        X = np.array(X)
 
         for i in range(self.n):  # neuronio
             d = D[i]
-            for j in range(self.X.shape[1]):
+            for j in range(X.shape[1]):
                 y_i = self.degrauFunction((np.dot(self.W[i], X)) + self.b[i], j)
                 Y[i].append(y_i)
                 e = d[j] - y_i
@@ -74,7 +79,7 @@ class Perceptron:
                 if e == 0:
                     acertos = acertos + 1
 
-        taxa_acertos = (acertos / self.X.shape[1]) * 100
+        taxa_acertos = (acertos / X.shape[1]) * 100
         print(f"Acuracia: {taxa_acertos}%")
 
 
