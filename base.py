@@ -24,8 +24,6 @@ class Perceptron:
         self.max_it = max_it + 1  # Maximo de Épocas
         self.fator_aprendizagem = fator_aprendizagem  # Fator de aprendizagem
         self.ve = [[] for len in range(n)]  # vetor de erros
-        
-        print(D)
 
     def degrauFunction(self, value, j):
         return 1 if value[j] >= 0 else 0
@@ -36,25 +34,29 @@ class Perceptron:
             self.Error = 0
             x = self.X
             for j in range(self.X.shape[1]):  # Numero de colunas (entradas)
-                Y = [[] for len in range(self.n)]
+                Y = []  # [[] for len in range(self.n)]
+                d = self.D[j]
                 for i in range(self.n):  # neuronio
-                    d = self.D[i]
+                    Y.append([])  # Cria a resposta do próximo neuronio
                     w = self.W[i]
                     b = self.b[i]
 
                     # @ -> Operador de produto escalar entre matrizes
                     y_i = self.degrauFunction((w @ x) + b, j)
-                    Y[i].append(y_i)
+                    Y[i] = y_i  # Vetor de saida de todos os neuronios
 
-                e = (d[j] - y_i)  # Fazer as verificações para verificar se as colunas são iguais
-                self.W[i] = w + (self.fator_aprendizagem * e) * x.T[j]  # -> transposta
-                self.b[i] = b + self.fator_aprendizagem * e * 1  # -> X[0] = 1
-                self.Error = self.Error + math.pow(e, 2)  # sum(math.pow(e, 2))
-                self.ve[i].append(e)
-                # print(w)
+                e = (d - Y)  # Fazer as verificações para verificar se as colunas são iguais     
+                for i in range(self.n):
+                    self.W[i] = w + (self.fator_aprendizagem * e[i]) * x.T[j]  # -> transposta
+                    self.b[i] = self.b[i] + (self.fator_aprendizagem * e[i] * 1)  # -> X[0] = 1
+                    self.Error = self.Error + math.pow(e[i], 2)  # sum(math.pow(e, 2))
+                    self.ve[i].append(e)
                 # print(self.b)
 
             self.t = self.t + 1
+        print(self.W)
+            
+        
 
     def start_test(self, X, D):
         acertos = 0
